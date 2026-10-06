@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import gspread
+import base64
 from google.oauth2.service_account import Credentials
 from PIL import Image
 
