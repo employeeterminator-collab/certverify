@@ -29,8 +29,27 @@ def get_sheets_connection():
 # ==========================================
 # UI Layout & Header
 # ==========================================
-st.markdown("<h1 style='text-align: center;'>Shisa Kanko-Shi Credential Verifier</h1>", unsafe_allow_html=True)
+def get_base64_image(image_path):
+    if os.path.exists(image_path):
+        with open(image_path, "rb") as f:
+            data = f.read()
+        return base64.b64encode(data).decode()
+    return ""
+
+img_base64 = get_base64_image("CPCS-Badge.png")
+
+if img_base64:
+    st.markdown(f"""
+        <div style='text-align: center;'>
+            <img src='data:image/png;base64,{img_base64}' width='120' style='vertical-align: middle; margin-right: 10px;'>
+            <h1 style='display: inline-block; vertical-align: middle; margin: 0;'>Shisa Kanko-Shi Credential Verifier</h1>
+        </div>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("<h1 style='text-align: center;'>Shisa Kanko-Shi Credential Verifier</h1>", unsafe_allow_html=True)
+
 st.write("Verify official certification details by **uploading your digital badge** or entering your **Voucher Code**.")
+st.markdown("---")
 
 # 建立兩個分頁供選擇：上傳徽章 vs 手動輸入驗證碼
 tab1, tab2 = st.tabs(["🛡️ Verify by Badge Upload", "⌨️ Verify by Voucher Code"])
@@ -40,7 +59,7 @@ is_badge_upload = False
 
 with tab1:
     st.subheader("Upload Digital Badge")
-    uploaded_badge = st.file_uploader("Upload your CSCP-Badge-{Voucher}.png file", type=["png"])
+    uploaded_badge = st.file_uploader("Upload your CSCP badge file (only .png accepted", type=["png"])
     
     if uploaded_badge is not None:
         try:
@@ -52,7 +71,7 @@ with tab1:
                 voucher_to_lookup = extracted_voucher
                 is_badge_upload = True
             else:
-                st.error("❌ No valid metadata (VoucherCode) found in this image.")
+                st.error("❌ No valid data found in this image.")
         except Exception as e:
             st.error(f"❌ Error reading image metadata: {e}")
 
