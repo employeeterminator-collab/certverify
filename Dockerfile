@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 8080
 
 # 啟動 Streamlit 應用程式，並繫結至 Cloud Run 的動態 PORT
-CMD ["sh", "-c", "streamlit run app.py --server.port=${PORT:-8080} --server.address=0.0.0.0"]
+CMD ["sh", "-c", "streamlit run verifier_app.py --server.port=${PORT:-8080} --server.address=0.0.0.0"]
