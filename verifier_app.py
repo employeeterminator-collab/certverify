@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import json
 import gspread
 import base64
 from google.oauth2.service_account import Credentials
@@ -22,9 +23,20 @@ def get_sheets_connection():
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive"
     ]
-    creds_dict = dict(st.secrets["gcp_service_account"])
+    
+    # Load service account JSON from environment variables
+    creds_json = os.getenv("GCP_SERVICE_ACCOUNT")
+    if not creds_json:
+        raise ValueError("GCP_SERVICE_ACCOUNT environment variable is not set.")
+    
+    creds_dict = json.loads(creds_json)
     creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
     client = gspread.authorize(creds)
+    
+    # Use SPREADSHEET_ID environment variable for robust connection
+    spreadsheet_id = os.getenv("SPREADSHEET_ID")
+    if spreadsheet_id:
+        return client.open_by_key(spreadsheet_id)
     return client.open("ShisaKanko_Exam_Database")
 
 # ==========================================
