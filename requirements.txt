@@ -1,4 +1,5 @@
 streamlit
 gspread
 google-auth
-Pillow
+requests
+pandas
